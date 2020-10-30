@@ -14,7 +14,7 @@ Here's an example application package dependency diagram:
 
 Add this line to your application's Gemfile and run `bundle install`:
 
-`gem 'graphwerk'`
+`gem 'graphwerk', group: %i[development test]`
 
 ## Usage
 
