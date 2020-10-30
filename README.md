@@ -24,7 +24,7 @@ For Rails applications a Railtie automatically loads a rake task that makes it e
 bundle exec rake graphwerk:update
 ```
 
-More advance usage is possible by passing a `Packwerk::PackageSet` directly to `Graphwerk::Builders::Graph` and calling `#build` returning a `Graphviz` instance:
+More advance usage is possible by passing a [`Packwerk::PackageSet`](https://github.com/Shopify/packwerk/blob/main/lib/packwerk/package_set.rb) directly to `Graphwerk::Builders::Graph` and calling `#build` returning a `Graphviz` instance:
 
 ```ruby
 graph = Graphwerk::Builders::Graph.new(
@@ -33,7 +33,7 @@ graph = Graphwerk::Builders::Graph.new(
 graph.output(svg: 'packwerk.svg')
 ```
 
-All Graphviz layouts are supported and options for the graph, nodes and edges can be set via an optional `options` argument:
+All [Graphviz layouts](https://graphviz.org/documentation/#layout-manual-pages) are supported and options for the graph, nodes and edges can be set via an optional `options` argument:
 
 ```ruby
 graph = Graphwerk::Builders::Graph.new(
