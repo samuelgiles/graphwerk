@@ -8,7 +8,7 @@ The gem builds on top of [Packwerk](https://github.com/Shopify/packwerk) and [Gr
 
 Here's an example application package dependency diagram:
 
-![example](https://user-images.githubusercontent.com/2643026/95458900-c159c000-096a-11eb-86b7-b5ef7c1e936d.png)
+![example](https://user-images.githubusercontent.com/2643026/97689408-6ca1f480-1a93-11eb-9999-22e79791b300.png)
 
 ## Install
 
