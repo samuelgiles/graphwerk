@@ -11,21 +11,14 @@ module Graphwerk
         @package = package
       end
 
-      WITHOUT_ROOT_FOLDER = T.let(
-        ->(package_name) { package_name.split('/', 2).last },
-        T.proc.params(package_name: String).returns(String)
-      )
-
       sig { returns(String) }
       def name
-        return WITHOUT_ROOT_FOLDER.call(@package.name) unless root?
-
-        Constants::ROOT_PACKAGE_NAME
+        package_name.node_name
       end
 
       sig { returns(T::Array[String]) }
       def dependencies
-        @package.dependencies.map { |dependency| WITHOUT_ROOT_FOLDER.call(dependency) }
+        @package.dependencies.map { |dependency| Name.new(dependency).node_name }
       end
 
       ROOT_COLOR = 'black'
@@ -33,24 +26,54 @@ module Graphwerk
 
       sig { returns(String) }
       def color
-        return ROOT_COLOR if root?
+        return ROOT_COLOR if package_name.root?
 
         COMPONENT_COLOR
       end
 
       private
 
-      ROOT_PACKAGE = '.'
-
-      sig { returns(T::Boolean) }
-      def root?
-        @package.name == ROOT_PACKAGE
+      sig { returns(Name) }
+      def package_name
+        @package_name = T.let(@package_name, T.nilable(Name))
+        @package_name ||= Name.new(@package.name)
       end
 
-      private_constant :ROOT_PACKAGE,
-                       :ROOT_COLOR,
+      class Name
+        extend T::Sig
+
+        sig { params(package_name: String).void }
+        def initialize(package_name)
+          @package_name = package_name
+        end
+
+        sig { returns(String) }
+        def node_name
+          return without_root_package unless root?
+
+          Constants::ROOT_PACKAGE_NAME
+        end
+
+        ROOT_PACKAGE = '.'
+
+        sig { returns(T::Boolean) }
+        def root?
+          @package_name == ROOT_PACKAGE
+        end
+
+        private
+
+        sig { returns(String) }
+        def without_root_package
+          T.must(@package_name.split('/', 2).last)
+        end
+
+        private_constant :ROOT_PACKAGE
+      end
+
+      private_constant :ROOT_COLOR,
                        :COMPONENT_COLOR,
-                       :WITHOUT_ROOT_FOLDER
+                       :Name
     end
   end
 end
