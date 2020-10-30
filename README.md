@@ -8,7 +8,7 @@ The gem builds on top of [Packwerk](https://github.com/Shopify/packwerk) and [Gr
 
 Here's an example application package dependency diagram:
 
-![example](https://user-images.githubusercontent.com/2643026/95458900-c159c000-096a-11eb-86b7-b5ef7c1e936d.png)
+![example](https://user-images.githubusercontent.com/2643026/97689408-6ca1f480-1a93-11eb-9999-22e79791b300.png)
 
 ## Install
 
@@ -24,7 +24,7 @@ For Rails applications a Railtie automatically loads a rake task that makes it e
 bundle exec rake graphwerk:update
 ```
 
-More advance usage is possible by passing a `Packwerk::PackageSet` directly to `Graphwerk::Builders::Graph` and calling `#build` returning a `Graphviz` instance:
+More advance usage is possible by passing a [`Packwerk::PackageSet`](https://github.com/Shopify/packwerk/blob/main/lib/packwerk/package_set.rb) directly to `Graphwerk::Builders::Graph` and calling `#build` returning a `Graphviz` instance:
 
 ```ruby
 graph = Graphwerk::Builders::Graph.new(
@@ -33,7 +33,7 @@ graph = Graphwerk::Builders::Graph.new(
 graph.output(svg: 'packwerk.svg')
 ```
 
-All Graphviz layouts are supported and options for the graph, nodes and edges can be set via an optional `options` argument:
+All [Graphviz layouts](https://graphviz.org/documentation/#layout-manual-pages) are supported and options for the graph, nodes and edges can be set via an optional `options` argument:
 
 ```ruby
 graph = Graphwerk::Builders::Graph.new(

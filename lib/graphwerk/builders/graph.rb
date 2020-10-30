@@ -17,7 +17,7 @@ module Graphwerk
       }
 
       DEFAULT_OPTIONS = T.let({
-        layout: Graphwerk::Layout::Fdp,
+        layout: Graphwerk::Layout::Dot,
         application: {
           style: 'filled',
           fillcolor: '#333333',
