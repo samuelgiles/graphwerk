@@ -47,43 +47,17 @@ module Graphwerk
       describe '#deprecated_references' do
         subject { presenter.deprecated_references }
 
-        let(:deprecated_references_file) { instance_double(Pathname) }
+        let(:deprecated_references_loader) { instance_double(DeprecatedReferencesLoader) }
 
         before do
-          expect(root_path)
-            .to receive(:join)
-            .with('components/admin', 'deprecated_references.yml')
-            .and_return(deprecated_references_file)
-          expect(deprecated_references_file)
-            .to receive(:exist?)
-            .and_return(deprecated_dependency_file_is_present)
+          expect(DeprecatedReferencesLoader)
+            .to receive(:new)
+            .with(package, root_path)
+            .and_return(deprecated_references_loader)
+          expect(deprecated_references_loader).to receive(:load).and_return(['.'])
         end
 
-        context 'when no deprecated dependency file is present' do
-          let(:deprecated_dependency_file_is_present) { false }
-
-          it { is_expected.to be_empty }
-        end
-
-        context 'when a deprecated dependency file is present' do
-          let(:deprecated_dependency_file_is_present) { true }
-
-          before do
-            expect(YAML)
-              .to receive(:load_file)
-              .with(deprecated_references_file)
-              .and_return(
-                '.' => {
-                  "::Order" => {
-                    "violations" => ["dependency"],
-                    "files" => ["components/admin/interfaces/gateway.rb"]
-                  }
-                }
-              )
-          end
-
-          it { is_expected.to contain_exactly('Application') }
-        end
+        it { is_expected.to contain_exactly('Application') }
       end
 
       describe '#color' do
