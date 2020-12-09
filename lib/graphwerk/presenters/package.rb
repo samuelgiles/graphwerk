@@ -54,11 +54,9 @@ module Graphwerk
           Constants::ROOT_PACKAGE_NAME
         end
 
-        ROOT_PACKAGE = '.'
-
         sig { returns(T::Boolean) }
         def root?
-          @package_name == ROOT_PACKAGE
+          @package_name == Packwerk::Package::ROOT_PACKAGE_NAME
         end
 
         private
@@ -67,8 +65,6 @@ module Graphwerk
         def without_root_package
           T.must(@package_name.split('/', 2).last)
         end
-
-        private_constant :ROOT_PACKAGE
       end
 
       private_constant :ROOT_COLOR,
