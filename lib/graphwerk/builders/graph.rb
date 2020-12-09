@@ -41,10 +41,11 @@ module Graphwerk
         }
       }, OptionsShape)
 
-      sig { params(package_set: Packwerk::PackageSet, options: T::Hash[Symbol, Object]).void }
-      def initialize(package_set, options: {})
+      sig { params(package_set: Packwerk::PackageSet, options: T::Hash[Symbol, Object], root_path: Pathname).void }
+      def initialize(package_set, options: {}, root_path: Pathname.new(ENV['PWD']))
         @package_set = package_set
         @options = T.let(DEFAULT_OPTIONS.deep_merge(options), OptionsShape)
+        @root_path = root_path
         @graph = T.let(build_empty_graph, GraphViz)
         @nodes = T.let(build_empty_nodes, T::Hash[String, GraphViz::Node])
       end
@@ -105,7 +106,7 @@ module Graphwerk
       sig { returns(T::Array[Presenters::Package]) }
       def packages
         @packages = T.let(@packages, T.nilable(T::Array[Presenters::Package]))
-        @packages ||= @package_set.map { |package| Presenters::Package.new(package) }
+        @packages ||= @package_set.map { |package| Presenters::Package.new(package, @root_path) }
       end
     end
   end

@@ -6,9 +6,10 @@ module Graphwerk
     class Package
       extend T::Sig
 
-      sig { params(package: Packwerk::Package).void }
-      def initialize(package)
+      sig { params(package: Packwerk::Package, root_path: Pathname).void }
+      def initialize(package, root_path)
         @package = package
+        @root_path = root_path
       end
 
       sig { returns(String) }
@@ -19,6 +20,15 @@ module Graphwerk
       sig { returns(T::Array[String]) }
       def dependencies
         @package.dependencies.map { |dependency| Name.new(dependency).node_name }
+      end
+
+      sig { returns(T::Array[String]) }
+      def deprecated_references
+        return [] if !deprecated_references_file.exist?
+
+        (YAML.load_file(deprecated_references_file) || {}).keys.map do |reference|
+          Name.new(reference).node_name
+        end
       end
 
       ROOT_COLOR = 'black'
@@ -32,6 +42,14 @@ module Graphwerk
       end
 
       private
+
+      DEPRECATED_REFERENCES_FILENAME = 'deprecated_references.yml'
+
+      sig { returns(Pathname) }
+      def deprecated_references_file
+        @deprecated_references_file = T.let(@deprecated_references_file, T.nilable(Pathname))
+        @deprecated_references_file ||= @root_path.join(@package.name, DEPRECATED_REFERENCES_FILENAME)
+      end
 
       sig { returns(Name) }
       def package_name
