@@ -8,6 +8,7 @@ require 'active_support/core_ext/hash/deep_merge'
 require 'graphwerk/version'
 require 'graphwerk/constants'
 require 'graphwerk/layout'
+require 'graphwerk/deprecated_references_loader'
 require 'graphwerk/presenters/package'
 require 'graphwerk/builders/graph'
 require 'graphwerk/railtie' if defined?(Rails)
