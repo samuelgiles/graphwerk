@@ -1,4 +1,4 @@
-Unreleased
+1.2.0
 
 * Deprecated references are now drawn on the output graph.
 
