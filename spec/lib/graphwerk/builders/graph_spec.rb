@@ -49,6 +49,18 @@ module Graphwerk
       describe '#build' do
         subject(:diagram) { builder.build.to_s }
 
+        let(:deprecated_references_loader_for_images) do
+          instance_double(DeprecatedReferencesLoader, load: ['.'])
+        end
+
+        before do
+          allow(DeprecatedReferencesLoader).to receive(:new).and_call_original
+          expect(DeprecatedReferencesLoader)
+            .to receive(:new)
+            .with(images_package, an_instance_of(Pathname))
+            .and_return(deprecated_references_loader_for_images)
+        end
+
         specify do
           expect(diagram).to eq <<~DOT
             digraph "strict" {
@@ -64,6 +76,7 @@ module Graphwerk
             admin [color = "azure4", label = "admin"];
               frontend -> images [color = "azure4"];
               images -> "storage_providers/s3" [color = "azure4"];
+              images -> Application [color = "red"];
               Application -> frontend [color = "black"];
               Application -> admin [color = "black"];
             }
@@ -96,6 +109,7 @@ module Graphwerk
                 frontend -> images [color = "azure4"];
                 frontend -> Application [color = "azure4"];
                 images -> "storage_providers/s3" [color = "azure4"];
+                images -> Application [color = "red"];
                 Application -> frontend [color = "black"];
                 Application -> admin [color = "black"];
               }

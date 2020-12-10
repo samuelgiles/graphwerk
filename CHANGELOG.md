@@ -1,3 +1,7 @@
+Unreleased
+
+* Deprecated references are now drawn on the output graph.
+
 1.1.0
 
 * Default layout switched to Dot

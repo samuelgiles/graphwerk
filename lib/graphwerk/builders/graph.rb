@@ -9,6 +9,7 @@ module Graphwerk
       OptionsShape = T.type_alias {
         {
           layout: Graphwerk::Layout,
+          deprecated_references_color: String,
           application: T::Hash[Symbol, Object],
           graph: T::Hash[Symbol, Object],
           node: T::Hash[Symbol, Object],
@@ -18,6 +19,7 @@ module Graphwerk
 
       DEFAULT_OPTIONS = T.let({
         layout: Graphwerk::Layout::Dot,
+        deprecated_references_color: 'red',
         application: {
           style: 'filled',
           fillcolor: '#333333',
@@ -41,10 +43,11 @@ module Graphwerk
         }
       }, OptionsShape)
 
-      sig { params(package_set: Packwerk::PackageSet, options: T::Hash[Symbol, Object]).void }
-      def initialize(package_set, options: {})
+      sig { params(package_set: Packwerk::PackageSet, options: T::Hash[Symbol, Object], root_path: Pathname).void }
+      def initialize(package_set, options: {}, root_path: Pathname.new(ENV['PWD']))
         @package_set = package_set
         @options = T.let(DEFAULT_OPTIONS.deep_merge(options), OptionsShape)
+        @root_path = root_path
         @graph = T.let(build_empty_graph, GraphViz)
         @nodes = T.let(build_empty_nodes, T::Hash[String, GraphViz::Node])
       end
@@ -85,7 +88,10 @@ module Graphwerk
 
       sig { void }
       def add_package_dependencies_to_graph
-        packages.each { |package| draw_dependencies(package) }
+        packages.each do |package|
+          draw_dependencies(package)
+          draw_deprecated_references(package)
+        end
       end
 
       sig { void }
@@ -102,10 +108,21 @@ module Graphwerk
         end
       end
 
+      sig { params(package: Presenters::Package).void }
+      def draw_deprecated_references(package)
+        package.deprecated_references.each do |reference|
+          @graph.add_edges(
+            @nodes[package.name],
+            @nodes[reference],
+            color: @options[:deprecated_references_color]
+          )
+        end
+      end
+
       sig { returns(T::Array[Presenters::Package]) }
       def packages
         @packages = T.let(@packages, T.nilable(T::Array[Presenters::Package]))
-        @packages ||= @package_set.map { |package| Presenters::Package.new(package) }
+        @packages ||= @package_set.map { |package| Presenters::Package.new(package, @root_path) }
       end
     end
   end

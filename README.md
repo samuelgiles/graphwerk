@@ -40,6 +40,7 @@ graph = Graphwerk::Builders::Graph.new(
    Packwerk::PackageSet.load_all_from("."),
    options: {
      layout: Graphwerk::Layout::Twopi,
+     deprecated_references_color: 'yellow',
      graph: { overlap: true },
      node: { fillcolor: '#000000' },
      edges: { len: '3.0' }

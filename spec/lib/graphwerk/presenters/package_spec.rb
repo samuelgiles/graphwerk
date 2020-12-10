@@ -4,9 +4,10 @@
 module Graphwerk
   module Presenters
     describe Package do
-      let(:presenter) { described_class.new(package) }
+      let(:presenter) { described_class.new(package, root_path) }
 
       let(:package) { child_package }
+      let(:root_path) { Pathname.new('.') }
 
       let(:child_package) do
         Packwerk::Package.new(
@@ -41,6 +42,22 @@ module Graphwerk
         subject { presenter.dependencies }
 
         it { is_expected.to eq ['security', 'orders'] }
+      end
+
+      describe '#deprecated_references' do
+        subject { presenter.deprecated_references }
+
+        let(:deprecated_references_loader) { instance_double(DeprecatedReferencesLoader) }
+
+        before do
+          expect(DeprecatedReferencesLoader)
+            .to receive(:new)
+            .with(package, root_path)
+            .and_return(deprecated_references_loader)
+          expect(deprecated_references_loader).to receive(:load).and_return(['.'])
+        end
+
+        it { is_expected.to contain_exactly('Application') }
       end
 
       describe '#color' do

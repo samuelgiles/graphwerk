@@ -6,9 +6,10 @@ module Graphwerk
     class Package
       extend T::Sig
 
-      sig { params(package: Packwerk::Package).void }
-      def initialize(package)
+      sig { params(package: Packwerk::Package, root_path: Pathname).void }
+      def initialize(package, root_path)
         @package = package
+        @root_path = root_path
       end
 
       sig { returns(String) }
@@ -19,6 +20,13 @@ module Graphwerk
       sig { returns(T::Array[String]) }
       def dependencies
         @package.dependencies.map { |dependency| Name.new(dependency).node_name }
+      end
+
+      sig { returns(T::Array[String]) }
+      def deprecated_references
+        DeprecatedReferencesLoader.new(@package, @root_path).load.map do |reference|
+          Name.new(reference).node_name
+        end
       end
 
       ROOT_COLOR = 'black'
@@ -54,11 +62,9 @@ module Graphwerk
           Constants::ROOT_PACKAGE_NAME
         end
 
-        ROOT_PACKAGE = '.'
-
         sig { returns(T::Boolean) }
         def root?
-          @package_name == ROOT_PACKAGE
+          @package_name == Packwerk::Package::ROOT_PACKAGE_NAME
         end
 
         private
@@ -67,8 +73,6 @@ module Graphwerk
         def without_root_package
           T.must(@package_name.split('/', 2).last)
         end
-
-        private_constant :ROOT_PACKAGE
       end
 
       private_constant :ROOT_COLOR,
