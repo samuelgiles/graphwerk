@@ -104,6 +104,9 @@ module Graphwerk
       sig { params(package: Presenters::Package).void }
       def draw_dependencies(package)
         package.dependencies.each do |dependency|
+          unless @nodes[dependency]
+            abort "Unable to add edge `#{package.name}`->`#{dependency}`"
+          end
           @graph.add_edges(@nodes[package.name], @nodes[dependency], color: package.color)
         end
       end
