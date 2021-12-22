@@ -1,8 +1,5 @@
 --dir
 .
+
 --ignore
-/bundle
---ignore
-node_modules
---ignore
-/vendor
+vendor

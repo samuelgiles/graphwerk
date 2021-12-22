@@ -10,5 +10,4 @@ group :development, :test do
   gem 'rb-fsevent', require: false
   gem 'rb-readline'
   gem 'rspec'
-  gem 'shoulda-matchers', require: false
 end

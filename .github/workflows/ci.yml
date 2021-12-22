@@ -1,0 +1,48 @@
+---
+name: Continuous Integration
+on:
+  push:
+    branches-ignore:
+    - refs/tags/*_staging
+    - refs/tags/*_production
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Checkout branch
+      uses: actions/checkout@v2
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+    - name: Cache gems
+      uses: actions/cache@v2
+      with:
+        path: vendor/bundle
+        key: "${{ runner.OS }}-gem-cache-${{ hashFiles('**/*.gemspec')
+          }}"
+        restore-keys: "${{ runner.OS }}-gem-cache-\n"
+    - uses: "cachix/install-nix-action@8d6d5e949675fbadb765c6b1a975047fa5f09b27"
+      with:
+        extra_nix_config: |
+          post-build-hook = /etc/nix/upload-to-cache.sh
+          substituters = https://cache.nixos.org/
+          trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+        nix_path: nixpkgs=channel:nixos-21.05
+    - name: Run CI through nix-shell
+      env:
+        GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
+      run: nix-shell --run "chmod 755 ./run_ci.sh && ./run_ci.sh"
+    - name: Post to Slack if build fails
+      if: failure() && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+        || github.ref == 'refs/heads/stable')
+      uses: pullreminders/slack-action@a5a262c896a1cc80dcbae59ba95513e2dfb21439
+      env:
+        SLACK_BOT_TOKEN: "${{ secrets.SLACK_BOT_TOKEN }}"
+      with:
+        args: '{\"channel\":\"C33574SJJ\",\"text\":\"* ${{ github.repository }} BUILD
+          FAILURE*\", \"attachments\": [{ \"fallback\": \"Failure summary\", \"color\":
+          \"#ff0000\", \"fields\": [{\"title\": \"Branch\", \"value\":\"${{ steps.extract_branch.outputs.branch
+          }}\"}, {\"title\": \"Who broke it\", \"value\":\"${{ github.actor }}\"},
+          { \"title\": \"Build output\", \"value\": \"https://github.com/${{ github.repository
+          }}/commit/${{ github.sha }}/checks\", \"short\": false }]}]}'

@@ -20,3 +20,5 @@
 .DS_Store
 
 .ruby-gemset
+.direnv
+.envrc
