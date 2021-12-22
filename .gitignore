@@ -13,7 +13,6 @@
 # rspec failure tracking
 .rspec_status
 
-/shell.nix
 /tags
 
 *.log
