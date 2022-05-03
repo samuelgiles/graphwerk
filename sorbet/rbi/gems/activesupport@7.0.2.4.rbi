@@ -1271,14 +1271,12 @@ class ActiveSupport::ExecutionWrapper
     def _complete_callbacks=(value); end
     def _run_callbacks; end
     def _run_callbacks=(value); end
-    def active; end
-    def active=(_arg0); end
     def active?; end
+    def active_key; end
     def error_reporter; end
-    def inherited(other); end
     def perform; end
     def register_hook(hook, outer: T.unsafe(nil)); end
-    def run!; end
+    def run!(reset: T.unsafe(nil)); end
     def to_complete(*args, &block); end
     def to_run(*args, &block); end
     def wrap; end
@@ -1463,8 +1461,10 @@ module ActiveSupport::IsolatedExecutionState
     def [](key); end
     def []=(key, value); end
     def clear; end
+    def delete(key); end
     def isolation_level; end
     def isolation_level=(level); end
+    def key?(key); end
     def unique_id; end
 
     private
@@ -2212,7 +2212,7 @@ class ActiveSupport::Reloader < ::ActiveSupport::ExecutionWrapper
     def prepare!; end
     def reload!; end
     def reloaded!; end
-    def run!; end
+    def run!(reset: T.unsafe(nil)); end
     def to_prepare(*args, &block); end
     def wrap; end
   end
@@ -2883,6 +2883,7 @@ end
 module ActiveSupport::VERSION; end
 ActiveSupport::VERSION::MAJOR = T.let(T.unsafe(nil), Integer)
 ActiveSupport::VERSION::MINOR = T.let(T.unsafe(nil), Integer)
+ActiveSupport::VERSION::PRE = T.let(T.unsafe(nil), String)
 ActiveSupport::VERSION::STRING = T.let(T.unsafe(nil), String)
 ActiveSupport::VERSION::TINY = T.let(T.unsafe(nil), Integer)
 
@@ -3197,6 +3198,7 @@ module ERB::Util
   def html_escape_once(s); end
   def json_escape(s); end
   def unwrapped_html_escape(s); end
+  def xml_name_escape(name); end
 
   class << self
     def h(s); end
@@ -3204,6 +3206,7 @@ module ERB::Util
     def html_escape_once(s); end
     def json_escape(s); end
     def unwrapped_html_escape(s); end
+    def xml_name_escape(name); end
   end
 end
 
@@ -3211,6 +3214,10 @@ ERB::Util::HTML_ESCAPE = T.let(T.unsafe(nil), Hash)
 ERB::Util::HTML_ESCAPE_ONCE_REGEXP = T.let(T.unsafe(nil), Regexp)
 ERB::Util::JSON_ESCAPE = T.let(T.unsafe(nil), Hash)
 ERB::Util::JSON_ESCAPE_REGEXP = T.let(T.unsafe(nil), Regexp)
+ERB::Util::TAG_NAME_FOLLOWING_REGEXP = T.let(T.unsafe(nil), Regexp)
+ERB::Util::TAG_NAME_REPLACEMENT_CHAR = T.let(T.unsafe(nil), String)
+ERB::Util::TAG_NAME_START_REGEXP = T.let(T.unsafe(nil), Regexp)
+ERB::Util::TAG_NAME_START_REGEXP_SET = T.let(T.unsafe(nil), String)
 
 module Enumerable
   def as_json(options = T.unsafe(nil)); end

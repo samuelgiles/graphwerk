@@ -13,6 +13,9 @@ class ConstantResolver
 
   private
 
+  def ambiguous_constant_message(const_name, paths); end
+  def coerce_load_paths(load_paths); end
+  def glob_path(path); end
   def resolve_constant(const_name, current_namespace_path, original_name: T.unsafe(nil)); end
   def resolve_traversing_namespace_path(const_name, current_namespace_path); end
 end

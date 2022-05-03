@@ -946,7 +946,7 @@ module ActionView::Helpers::FormTagHelper
 
   private
 
-  def convert_direct_upload_option_to_url(name, options); end
+  def convert_direct_upload_option_to_url(options); end
   def extra_tags_for_form(html_options); end
   def form_tag_html(html_options); end
   def form_tag_with_body(html_options, content); end
@@ -1090,10 +1090,11 @@ class ActionView::Helpers::TagHelper::TagBuilder
   def p(*arguments, **options, &block); end
   def tag_option(key, value, escape); end
   def tag_options(options, escape = T.unsafe(nil)); end
-  def tag_string(name, content = T.unsafe(nil), escape_attributes: T.unsafe(nil), **options, &block); end
+  def tag_string(name, content = T.unsafe(nil), **options, &block); end
 
   private
 
+  def handle_deprecated_escape_options(options); end
   def method_missing(called, *args, **options, &block); end
   def prefix_tag_option(prefix, key, value, escape); end
   def respond_to_missing?(*args); end
@@ -2590,6 +2591,7 @@ end
 module ActionView::VERSION; end
 ActionView::VERSION::MAJOR = T.let(T.unsafe(nil), Integer)
 ActionView::VERSION::MINOR = T.let(T.unsafe(nil), Integer)
+ActionView::VERSION::PRE = T.let(T.unsafe(nil), String)
 ActionView::VERSION::STRING = T.let(T.unsafe(nil), String)
 ActionView::VERSION::TINY = T.let(T.unsafe(nil), Integer)
 

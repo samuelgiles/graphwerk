@@ -14,6 +14,7 @@ module Nokogiri
     def XSLT(stylesheet, modules = T.unsafe(nil)); end
     def install_default_aliases; end
     def jruby?; end
+    def libxml2_patches; end
     def make(input = T.unsafe(nil), opts = T.unsafe(nil), &blk); end
     def parse(string, url = T.unsafe(nil), encoding = T.unsafe(nil), options = T.unsafe(nil)); end
     def uses_gumbo?; end
@@ -35,7 +36,7 @@ class Nokogiri::CSS::Node
   def find_by_type(types); end
   def to_a; end
   def to_type; end
-  def to_xpath(prefix = T.unsafe(nil), visitor = T.unsafe(nil)); end
+  def to_xpath(prefix, visitor); end
   def type; end
   def type=(_arg0); end
   def value; end
@@ -48,68 +49,72 @@ class Nokogiri::CSS::Parser < ::Racc::Parser
   def initialize(namespaces = T.unsafe(nil)); end
 
   def _reduce_1(val, _values, result); end
+  def _reduce_10(val, _values, result); end
   def _reduce_11(val, _values, result); end
-  def _reduce_12(val, _values, result); end
   def _reduce_13(val, _values, result); end
   def _reduce_14(val, _values, result); end
   def _reduce_15(val, _values, result); end
-  def _reduce_16(val, _values, result); end
+  def _reduce_17(val, _values, result); end
   def _reduce_18(val, _values, result); end
+  def _reduce_19(val, _values, result); end
   def _reduce_2(val, _values, result); end
-  def _reduce_20(val, _values, result); end
   def _reduce_21(val, _values, result); end
-  def _reduce_22(val, _values, result); end
   def _reduce_23(val, _values, result); end
+  def _reduce_24(val, _values, result); end
   def _reduce_25(val, _values, result); end
   def _reduce_26(val, _values, result); end
-  def _reduce_27(val, _values, result); end
   def _reduce_28(val, _values, result); end
   def _reduce_29(val, _values, result); end
   def _reduce_3(val, _values, result); end
   def _reduce_30(val, _values, result); end
   def _reduce_31(val, _values, result); end
   def _reduce_32(val, _values, result); end
-  def _reduce_33(val, _values, result); end
   def _reduce_34(val, _values, result); end
   def _reduce_35(val, _values, result); end
   def _reduce_36(val, _values, result); end
   def _reduce_37(val, _values, result); end
+  def _reduce_38(val, _values, result); end
+  def _reduce_39(val, _values, result); end
   def _reduce_4(val, _values, result); end
   def _reduce_40(val, _values, result); end
   def _reduce_41(val, _values, result); end
   def _reduce_42(val, _values, result); end
-  def _reduce_43(val, _values, result); end
-  def _reduce_44(val, _values, result); end
   def _reduce_45(val, _values, result); end
+  def _reduce_47(val, _values, result); end
   def _reduce_48(val, _values, result); end
   def _reduce_49(val, _values, result); end
   def _reduce_5(val, _values, result); end
   def _reduce_50(val, _values, result); end
   def _reduce_51(val, _values, result); end
-  def _reduce_52(val, _values, result); end
+  def _reduce_54(val, _values, result); end
+  def _reduce_55(val, _values, result); end
+  def _reduce_56(val, _values, result); end
+  def _reduce_57(val, _values, result); end
   def _reduce_58(val, _values, result); end
-  def _reduce_59(val, _values, result); end
   def _reduce_6(val, _values, result); end
-  def _reduce_60(val, _values, result); end
-  def _reduce_61(val, _values, result); end
-  def _reduce_63(val, _values, result); end
   def _reduce_64(val, _values, result); end
   def _reduce_65(val, _values, result); end
   def _reduce_66(val, _values, result); end
   def _reduce_67(val, _values, result); end
-  def _reduce_68(val, _values, result); end
   def _reduce_69(val, _values, result); end
   def _reduce_7(val, _values, result); end
   def _reduce_70(val, _values, result); end
+  def _reduce_71(val, _values, result); end
+  def _reduce_72(val, _values, result); end
+  def _reduce_73(val, _values, result); end
+  def _reduce_74(val, _values, result); end
+  def _reduce_75(val, _values, result); end
+  def _reduce_76(val, _values, result); end
   def _reduce_8(val, _values, result); end
   def _reduce_9(val, _values, result); end
   def _reduce_none(val, _values, result); end
+  def cache_key(query, prefix, visitor); end
   def next_token; end
   def on_error(error_token_id, error_value, value_stack); end
   def parse(string); end
   def unescape_css_identifier(identifier); end
   def unescape_css_string(str); end
-  def xpath_for(string, options = T.unsafe(nil)); end
+  def xpath_for(string, prefix, visitor); end
 
   class << self
     def [](string); end
@@ -144,7 +149,11 @@ end
 class Nokogiri::CSS::Tokenizer::ScanError < ::StandardError; end
 
 class Nokogiri::CSS::XPathVisitor
+  def initialize(builtins: T.unsafe(nil), doctype: T.unsafe(nil)); end
+
   def accept(node); end
+  def config; end
+  def visit_attrib_name(node); end
   def visit_attribute_condition(node); end
   def visit_child_selector(node); end
   def visit_class_condition(node); end
@@ -162,25 +171,41 @@ class Nokogiri::CSS::XPathVisitor
   private
 
   def css_class(hay, needle); end
-  def css_class_builtin(hay, needle); end
-  def css_class_standard(hay, needle); end
+  def html5_element_name_needs_namespace_handling(node); end
   def is_of_type_pseudo_class?(node); end
   def nth(node, options = T.unsafe(nil)); end
   def read_a_and_positive_b(values); end
 end
 
-class Nokogiri::CSS::XPathVisitorAlwaysUseBuiltins < ::Nokogiri::CSS::XPathVisitor
-  private
+module Nokogiri::CSS::XPathVisitor::BuiltinsConfig; end
+Nokogiri::CSS::XPathVisitor::BuiltinsConfig::ALWAYS = T.let(T.unsafe(nil), Symbol)
+Nokogiri::CSS::XPathVisitor::BuiltinsConfig::NEVER = T.let(T.unsafe(nil), Symbol)
+Nokogiri::CSS::XPathVisitor::BuiltinsConfig::OPTIMAL = T.let(T.unsafe(nil), Symbol)
+Nokogiri::CSS::XPathVisitor::BuiltinsConfig::VALUES = T.let(T.unsafe(nil), Array)
+module Nokogiri::CSS::XPathVisitor::DoctypeConfig; end
+Nokogiri::CSS::XPathVisitor::DoctypeConfig::HTML4 = T.let(T.unsafe(nil), Symbol)
+Nokogiri::CSS::XPathVisitor::DoctypeConfig::HTML5 = T.let(T.unsafe(nil), Symbol)
+Nokogiri::CSS::XPathVisitor::DoctypeConfig::VALUES = T.let(T.unsafe(nil), Array)
+Nokogiri::CSS::XPathVisitor::DoctypeConfig::XML = T.let(T.unsafe(nil), Symbol)
+Nokogiri::CSS::XPathVisitor::WILDCARD_NAMESPACES = T.let(T.unsafe(nil), TrueClass)
 
-  def css_class(hay, needle); end
+module Nokogiri::CSS::XPathVisitorAlwaysUseBuiltins
+  class << self
+    def new; end
+  end
 end
 
-class Nokogiri::CSS::XPathVisitorOptimallyUseBuiltins < ::Nokogiri::CSS::XPathVisitor
-  private
-
-  def css_class(hay, needle); end
+module Nokogiri::CSS::XPathVisitorOptimallyUseBuiltins
+  class << self
+    def new; end
+  end
 end
 
+module Nokogiri::ClassResolver
+  def related_class(class_name); end
+end
+
+Nokogiri::ClassResolver::VALID_NAMESPACES = T.let(T.unsafe(nil), Set)
 module Nokogiri::Decorators; end
 
 module Nokogiri::Decorators::Slop
@@ -218,7 +243,7 @@ Nokogiri::HTML = Nokogiri::HTML4
 
 module Nokogiri::HTML4
   class << self
-    def fragment(string, encoding = T.unsafe(nil)); end
+    def fragment(string, encoding = T.unsafe(nil), options = T.unsafe(nil), &block); end
     def parse(input, url = T.unsafe(nil), encoding = T.unsafe(nil), options = T.unsafe(nil), &block); end
   end
 end
@@ -235,6 +260,7 @@ class Nokogiri::HTML4::Document < ::Nokogiri::XML::Document
   def title; end
   def title=(text); end
   def type; end
+  def xpath_doctype; end
 
   private
 
@@ -280,10 +306,10 @@ class Nokogiri::HTML4::Document::EncodingReader::SAXHandler < ::Nokogiri::XML::S
 end
 
 class Nokogiri::HTML4::DocumentFragment < ::Nokogiri::XML::DocumentFragment
-  def initialize(document, tags = T.unsafe(nil), ctx = T.unsafe(nil)); end
+  def initialize(document, tags = T.unsafe(nil), ctx = T.unsafe(nil), options = T.unsafe(nil)); end
 
   class << self
-    def parse(tags, encoding = T.unsafe(nil)); end
+    def parse(tags, encoding = T.unsafe(nil), options = T.unsafe(nil), &block); end
   end
 end
 
@@ -481,6 +507,7 @@ end
 class Nokogiri::HTML5::Document < ::Nokogiri::HTML4::Document
   def fragment(tags = T.unsafe(nil)); end
   def to_xml(options = T.unsafe(nil), &block); end
+  def xpath_doctype; end
 
   class << self
     def do_parse(string_or_io, url, encoding, options); end
@@ -573,7 +600,7 @@ module Nokogiri::XML
     def Reader(string_or_io, url = T.unsafe(nil), encoding = T.unsafe(nil), options = T.unsafe(nil)); end
     def RelaxNG(string_or_io, options = T.unsafe(nil)); end
     def Schema(string_or_io, options = T.unsafe(nil)); end
-    def fragment(string); end
+    def fragment(string, options = T.unsafe(nil), &block); end
     def parse(thing, url = T.unsafe(nil), encoding = T.unsafe(nil), options = T.unsafe(nil), &block); end
   end
 end
@@ -601,6 +628,8 @@ class Nokogiri::XML::AttributeDecl < ::Nokogiri::XML::Node
 end
 
 class Nokogiri::XML::Builder
+  include ::Nokogiri::ClassResolver
+
   def initialize(options = T.unsafe(nil), root = T.unsafe(nil), &block); end
 
   def <<(string); end
@@ -704,6 +733,7 @@ class Nokogiri::XML::Document < ::Nokogiri::XML::Node
   def url; end
   def validate; end
   def version; end
+  def xpath_doctype; end
 
   private
 
@@ -724,7 +754,7 @@ Nokogiri::XML::Document::NCNAME_RE = T.let(T.unsafe(nil), Regexp)
 Nokogiri::XML::Document::NCNAME_START_CHAR = T.let(T.unsafe(nil), String)
 
 class Nokogiri::XML::DocumentFragment < ::Nokogiri::XML::Node
-  def initialize(document, tags = T.unsafe(nil), ctx = T.unsafe(nil)); end
+  def initialize(document, tags = T.unsafe(nil), ctx = T.unsafe(nil), options = T.unsafe(nil)); end
 
   def css(*args); end
   def dup; end
@@ -745,7 +775,7 @@ class Nokogiri::XML::DocumentFragment < ::Nokogiri::XML::Node
 
   class << self
     def new(*_arg0); end
-    def parse(tags); end
+    def parse(tags, options = T.unsafe(nil), &block); end
   end
 end
 
@@ -826,6 +856,7 @@ class Nokogiri::XML::Node
   include ::Nokogiri::HTML5::Node
   include ::Nokogiri::XML::PP::Node
   include ::Nokogiri::XML::Searchable
+  include ::Nokogiri::ClassResolver
   include ::Enumerable
 
   def initialize(name, document); end
@@ -833,7 +864,6 @@ class Nokogiri::XML::Node
   def <<(node_or_tags); end
   def <=>(other); end
   def ==(other); end
-  def >(selector); end
   def [](name); end
   def []=(name, value); end
   def accept(visitor); end
@@ -1056,7 +1086,6 @@ class Nokogiri::XML::NodeSet
   def -(_arg0); end
   def <<(_arg0); end
   def ==(other); end
-  def >(selector); end
   def [](*_arg0); end
   def add_class(name); end
   def after(datum); end
@@ -1125,6 +1154,8 @@ class Nokogiri::XML::ParseOptions
   def initialize(options = T.unsafe(nil)); end
 
   def ==(other); end
+  def big_lines; end
+  def big_lines?; end
   def compact; end
   def compact?; end
   def default_html; end
@@ -1146,6 +1177,7 @@ class Nokogiri::XML::ParseOptions
   def inspect; end
   def nobasefix; end
   def nobasefix?; end
+  def nobig_lines; end
   def noblanks; end
   def noblanks?; end
   def nocdata; end
@@ -1205,6 +1237,7 @@ class Nokogiri::XML::ParseOptions
   def xinclude?; end
 end
 
+Nokogiri::XML::ParseOptions::BIG_LINES = T.let(T.unsafe(nil), Integer)
 Nokogiri::XML::ParseOptions::COMPACT = T.let(T.unsafe(nil), Integer)
 Nokogiri::XML::ParseOptions::DEFAULT_HTML = T.let(T.unsafe(nil), Integer)
 Nokogiri::XML::ParseOptions::DEFAULT_SCHEMA = T.let(T.unsafe(nil), Integer)
@@ -1408,6 +1441,7 @@ end
 module Nokogiri::XML::Searchable
   def %(*args); end
   def /(*args); end
+  def >(selector); end
   def at(*args); end
   def at_css(*args); end
   def at_xpath(*args); end
@@ -1463,6 +1497,10 @@ Nokogiri::XML::XML_C14N_1_0 = T.let(T.unsafe(nil), Integer)
 Nokogiri::XML::XML_C14N_1_1 = T.let(T.unsafe(nil), Integer)
 Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0 = T.let(T.unsafe(nil), Integer)
 module Nokogiri::XML::XPath; end
+Nokogiri::XML::XPath::CURRENT_SEARCH_PREFIX = T.let(T.unsafe(nil), String)
+Nokogiri::XML::XPath::GLOBAL_SEARCH_PREFIX = T.let(T.unsafe(nil), String)
+Nokogiri::XML::XPath::ROOT_SEARCH_PREFIX = T.let(T.unsafe(nil), String)
+Nokogiri::XML::XPath::SUBTREE_SEARCH_PREFIX = T.let(T.unsafe(nil), String)
 
 class Nokogiri::XML::XPath::SyntaxError < ::Nokogiri::XML::SyntaxError
   def to_s; end

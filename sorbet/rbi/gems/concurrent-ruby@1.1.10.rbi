@@ -21,7 +21,7 @@ module Concurrent
   def dataflow_with(executor, *inputs, &block); end
   def dataflow_with!(executor, *inputs, &block); end
   def leave_transaction; end
-  def monotonic_time; end
+  def monotonic_time(unit = T.unsafe(nil)); end
 
   class << self
     def abort_transaction; end
@@ -42,7 +42,7 @@ module Concurrent
     def global_logger=(value); end
     def global_timer_set; end
     def leave_transaction; end
-    def monotonic_time; end
+    def monotonic_time(unit = T.unsafe(nil)); end
     def new_fast_executor(opts = T.unsafe(nil)); end
     def new_io_executor(opts = T.unsafe(nil)); end
     def physical_processor_count; end
@@ -89,7 +89,7 @@ class Concurrent::AbstractExecutorService < ::Concurrent::Synchronization::Locka
 
   private
 
-  def handle_fallback(*args); end
+  def fallback_action(*args); end
   def ns_auto_terminate?; end
   def ns_execute(*args, &task); end
   def ns_kill_execution; end
@@ -720,7 +720,6 @@ Concurrent::GLOBAL_FAST_EXECUTOR = T.let(T.unsafe(nil), Concurrent::Delay)
 Concurrent::GLOBAL_IMMEDIATE_EXECUTOR = T.let(T.unsafe(nil), Concurrent::ImmediateExecutor)
 Concurrent::GLOBAL_IO_EXECUTOR = T.let(T.unsafe(nil), Concurrent::Delay)
 Concurrent::GLOBAL_LOGGER = T.let(T.unsafe(nil), Concurrent::AtomicReference)
-Concurrent::GLOBAL_MONOTONIC_CLOCK = T.let(T.unsafe(nil), T.untyped)
 Concurrent::GLOBAL_TIMER_SET = T.let(T.unsafe(nil), Concurrent::Delay)
 class Concurrent::Hash < ::Hash; end
 Concurrent::HashImplementation = Hash
@@ -1782,14 +1781,14 @@ class Concurrent::RubyThreadPoolExecutor < ::Concurrent::RubyExecutorService
   def max_length; end
   def max_queue; end
   def min_length; end
+  def prune_pool; end
   def queue_length; end
-  def ready_worker(worker); end
+  def ready_worker(worker, last_message); end
   def remaining_capacity; end
   def remove_busy_worker(worker); end
   def scheduled_task_count; end
   def synchronous; end
   def worker_died(worker); end
-  def worker_not_old_enough(worker); end
   def worker_task_completed; end
 
   private
@@ -1802,12 +1801,11 @@ class Concurrent::RubyThreadPoolExecutor < ::Concurrent::RubyExecutorService
   def ns_kill_execution; end
   def ns_limited_queue?; end
   def ns_prune_pool; end
-  def ns_ready_worker(worker, success = T.unsafe(nil)); end
+  def ns_ready_worker(worker, last_message, success = T.unsafe(nil)); end
   def ns_remove_busy_worker(worker); end
   def ns_reset_if_forked; end
   def ns_shutdown_execution; end
   def ns_worker_died(worker); end
-  def ns_worker_not_old_enough(worker); end
 end
 
 Concurrent::RubyThreadPoolExecutor::DEFAULT_MAX_POOL_SIZE = T.let(T.unsafe(nil), Integer)
@@ -2214,11 +2212,9 @@ end
 class Concurrent::TVar < ::Concurrent::Synchronization::Object
   def initialize(value); end
 
-  def unsafe_increment_version; end
   def unsafe_lock; end
   def unsafe_value; end
   def unsafe_value=(value); end
-  def unsafe_version; end
   def value; end
   def value=(value); end
 
@@ -2283,7 +2279,6 @@ class Concurrent::TimerTask < ::Concurrent::RubyExecutorService
   def ns_kill_execution; end
   def ns_shutdown_execution; end
   def schedule_next_task(interval = T.unsafe(nil)); end
-  def timeout_task(completion); end
 
   class << self
     def execute(opts = T.unsafe(nil), &task); end
@@ -2298,9 +2293,9 @@ class Concurrent::Transaction
 
   def abort; end
   def commit; end
+  def open(tvar); end
   def read(tvar); end
   def unlock; end
-  def valid?; end
   def write(tvar, value); end
 
   class << self
@@ -2313,11 +2308,11 @@ Concurrent::Transaction::ABORTED = T.let(T.unsafe(nil), Object)
 class Concurrent::Transaction::AbortError < ::StandardError; end
 class Concurrent::Transaction::LeaveError < ::StandardError; end
 
-class Concurrent::Transaction::ReadLogEntry < ::Struct
-  def tvar; end
-  def tvar=(_); end
-  def version; end
-  def version=(_); end
+class Concurrent::Transaction::OpenEntry < ::Struct
+  def modified; end
+  def modified=(_); end
+  def value; end
+  def value=(_); end
 
   class << self
     def [](*_arg0); end

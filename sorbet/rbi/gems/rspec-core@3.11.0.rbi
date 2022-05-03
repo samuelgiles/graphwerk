@@ -17,6 +17,8 @@ module RSpec
     def context(*args, &example_group_block); end
     def current_example; end
     def current_example=(example); end
+    def current_scope; end
+    def current_scope=(scope); end
     def describe(*args, &example_group_block); end
     def example_group(*args, &example_group_block); end
     def fcontext(*args, &example_group_block); end
@@ -78,6 +80,8 @@ class RSpec::Core::Bisect::Channel
   def receive; end
   def send(message); end
 end
+
+RSpec::Core::Bisect::Channel::MARSHAL_DUMP_ENCODING = T.let(T.unsafe(nil), Encoding)
 
 class RSpec::Core::Bisect::ExampleSetDescriptor < ::Struct
   def all_example_ids; end
@@ -1223,6 +1227,7 @@ class RSpec::Core::Formatters::Loader
   def duplicate_formatter_exists?(new_formatter); end
   def existing_formatter_implements?(notification); end
   def find_formatter(formatter_to_use); end
+  def has_matching_output?(formatter, new_formatter); end
   def notifications_for(formatter_class); end
   def open_stream(path_or_wrapper); end
   def path_for(const_ref); end
@@ -1633,6 +1638,8 @@ module RSpec::Core::MemoizedHelpers
 
   def __init_memoized; end
   def __memoized; end
+  def enforce_value_expectation(matcher, method_name); end
+  def matcher_supports_value_expectations?(matcher); end
 
   class << self
     def define_helpers_on(example_group); end
@@ -2029,6 +2036,10 @@ class RSpec::Core::Ordering::Random
 end
 
 RSpec::Core::Ordering::Random::MAX_32_BIT = T.let(T.unsafe(nil), Integer)
+
+class RSpec::Core::Ordering::RecentlyModified
+  def order(list); end
+end
 
 class RSpec::Core::Ordering::Registry
   def initialize(configuration); end
@@ -2472,6 +2483,8 @@ class RSpec::Core::World
   def report_filter_message(message); end
   def reporter; end
   def reset; end
+  def rspec_is_quitting; end
+  def rspec_is_quitting=(_arg0); end
   def shared_example_group_registry; end
   def source_from_file(path); end
   def syntax_highlighter; end
