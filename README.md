@@ -1,5 +1,3 @@
-**N.B. The Bellroy technology team are transitioning away from Ruby as their primary programming language, and will not longer actively update this repository. Contact us if you'd like to take over as the primary maintainer.**
-
 ![graphwerk-logo](https://user-images.githubusercontent.com/2643026/95463568-cfaada80-0970-11eb-8305-aea01a0d77a9.png)
 
 # Graphwerk [![Gem Version](https://badge.fury.io/rb/graphwerk.svg)](https://badge.fury.io/rb/graphwerk) [![Continuous Integration](https://github.com/bellroy/graphwerk/actions/workflows/ci.yml/badge.svg)](https://github.com/bellroy/graphwerk/actions/workflows/ci.yml)
