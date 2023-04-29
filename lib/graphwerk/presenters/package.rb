@@ -29,6 +29,13 @@ module Graphwerk
         end
       end
 
+      sig { returns(T::Array[String]) }
+      def todos
+        PackageTodoLoader.new(@package, @root_path).load.map do |reference|
+          Name.new(reference).node_name
+        end
+      end
+
       ROOT_COLOR = 'black'
       COMPONENT_COLOR = 'azure4'
 

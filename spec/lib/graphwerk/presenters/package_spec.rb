@@ -60,6 +60,22 @@ module Graphwerk
         it { is_expected.to contain_exactly('Application') }
       end
 
+      describe '#todos' do
+        subject { presenter.todos }
+
+        let(:package_todo_loader) { instance_double(PackageTodoLoader) }
+
+        before do
+          expect(PackageTodoLoader)
+            .to receive(:new)
+            .with(package, root_path)
+            .and_return(package_todo_loader)
+          expect(package_todo_loader).to receive(:load).and_return(['.'])
+        end
+
+        it { is_expected.to contain_exactly('Application') }
+      end
+
       describe '#color' do
         subject { presenter.color }
 

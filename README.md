@@ -41,6 +41,7 @@ graph = Graphwerk::Builders::Graph.new(
    options: {
      layout: Graphwerk::Layout::Twopi,
      deprecated_references_color: 'yellow',
+     todos_color: 'yellow',
      graph: { overlap: true },
      node: { fillcolor: '#000000' },
      edges: { len: '3.0' }

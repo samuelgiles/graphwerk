@@ -53,12 +53,21 @@ module Graphwerk
           instance_double(DeprecatedReferencesLoader, load: ['.'])
         end
 
+        let(:package_todo_loader_for_images) do
+          instance_double(PackageTodoLoader, load: [])
+        end
+
         before do
           allow(DeprecatedReferencesLoader).to receive(:new).and_call_original
           expect(DeprecatedReferencesLoader)
             .to receive(:new)
             .with(images_package, an_instance_of(Pathname))
             .and_return(deprecated_references_loader_for_images)
+          allow(PackageTodoLoader).to receive(:new).and_call_original
+          expect(PackageTodoLoader)
+            .to receive(:new)
+            .with(images_package, an_instance_of(Pathname))
+            .and_return(package_todo_loader_for_images)
         end
 
         specify do
