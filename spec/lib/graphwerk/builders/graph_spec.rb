@@ -53,12 +53,21 @@ module Graphwerk
           instance_double(DeprecatedReferencesLoader, load: ['.'])
         end
 
+        let(:package_todo_loader_for_frontend) do
+          instance_double(PackageTodoLoader, load: ['components/storage_providers/s3'])
+        end
+
         before do
           allow(DeprecatedReferencesLoader).to receive(:new).and_call_original
           expect(DeprecatedReferencesLoader)
             .to receive(:new)
             .with(images_package, an_instance_of(Pathname))
             .and_return(deprecated_references_loader_for_images)
+          allow(PackageTodoLoader).to receive(:new).and_call_original
+          expect(PackageTodoLoader)
+            .to receive(:new)
+            .with(frontend_package, an_instance_of(Pathname))
+            .and_return(package_todo_loader_for_frontend)
         end
 
         specify do
@@ -75,6 +84,7 @@ module Graphwerk
             images [color = "azure4", label = "images"];
             admin [color = "azure4", label = "admin"];
               frontend -> images [color = "azure4"];
+              frontend -> "storage_providers/s3" [color = "red"];
               images -> "storage_providers/s3" [color = "azure4"];
               images -> Application [color = "red"];
               Application -> frontend [color = "black"];
@@ -108,6 +118,7 @@ module Graphwerk
               admin [color = "azure4", label = "admin"];
                 frontend -> images [color = "azure4"];
                 frontend -> Application [color = "azure4"];
+                frontend -> "storage_providers/s3" [color = "red"];
                 images -> "storage_providers/s3" [color = "azure4"];
                 images -> Application [color = "red"];
                 Application -> frontend [color = "black"];
