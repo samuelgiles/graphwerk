@@ -1,6 +1,7 @@
-Unreleased
+1.3.0
 
 * Draw package_todo.yml dependencies
+* Add configuration option to hide todo edges on the graph
 
 1.2.1
 
