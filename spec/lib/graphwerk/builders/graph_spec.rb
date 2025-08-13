@@ -59,12 +59,12 @@ module Graphwerk
 
         before do
           allow(DeprecatedReferencesLoader).to receive(:new).and_call_original
-          expect(DeprecatedReferencesLoader)
+          allow(DeprecatedReferencesLoader)
             .to receive(:new)
             .with(images_package, an_instance_of(Pathname))
             .and_return(deprecated_references_loader_for_images)
           allow(PackageTodoLoader).to receive(:new).and_call_original
-          expect(PackageTodoLoader)
+          allow(PackageTodoLoader)
             .to receive(:new)
             .with(frontend_package, an_instance_of(Pathname))
             .and_return(package_todo_loader_for_frontend)
@@ -125,6 +125,31 @@ module Graphwerk
                 Application -> admin [color = "black"];
               }
             DOT
+          end
+        end
+
+        context 'when hiding todos' do
+          let(:builder) { described_class.new(package_set, options: { hide_todo: true }) }
+
+          specify do
+            expect(diagram).to eq <<~DOT
+            digraph "strict" {
+            Application [style = "filled", fillcolor = "#333333", fontcolor = "white", label = "Application", color = "black"];
+            root = "Application";
+            overlap = "false";
+            splines = "true";
+            node[ shape  =  "box" , style  =  "rounded, filled" , fontcolor  =  "white" , fillcolor  =  "#EF673E" , color  =  "#EF673E" , fontname  =  "Lato"];
+            edge[ len  =  "0.4"];
+            "storage_providers/s3" [color = "azure4", label = "storage_providers/s3"];
+            frontend [color = "azure4", label = "frontend"];
+            images [color = "azure4", label = "images"];
+            admin [color = "azure4", label = "admin"];
+              frontend -> images [color = "azure4"];
+              images -> "storage_providers/s3" [color = "azure4"];
+              Application -> frontend [color = "black"];
+              Application -> admin [color = "black"];
+            }
+          DOT
           end
         end
       end

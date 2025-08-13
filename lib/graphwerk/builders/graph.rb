@@ -11,6 +11,7 @@ module Graphwerk
           layout: Graphwerk::Layout,
           deprecated_references_color: String,
           package_todo_color: String,
+          hide_todo: T::Boolean,
           application: T::Hash[Symbol, Object],
           graph: T::Hash[Symbol, Object],
           node: T::Hash[Symbol, Object],
@@ -22,6 +23,7 @@ module Graphwerk
         layout: Graphwerk::Layout::Dot,
         deprecated_references_color: 'red',
         package_todo_color: 'red',
+        hide_todo: false,
         application: {
           style: 'filled',
           fillcolor: '#333333',
@@ -92,6 +94,8 @@ module Graphwerk
       def add_package_dependencies_to_graph
         packages.each do |package|
           draw_dependencies(package)
+          next if @options[:hide_todo]
+
           draw_deprecated_references(package)
           draw_package_todos(package)
         end
