@@ -15,7 +15,7 @@ module Graphwerk
     def load
       return [] if !deprecated_references_file.exist?
 
-      (YAML.load_file(deprecated_references_file) || {}).keys
+      (YAML.safe_load_file(deprecated_references_file) || {}).keys
     end
 
     private
