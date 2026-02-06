@@ -10,7 +10,7 @@ nixpkgs.mkShell {
     niv
     pkg-config
     readline
-    ruby_2_7
+    ruby_3_3
     zlib
   ]
   ++ (if stdenv.hostPlatform.isDarwin then [ libiconv darwin.apple_sdk.frameworks.CoreServices ] else [ ]);
