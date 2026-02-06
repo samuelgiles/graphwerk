@@ -39,7 +39,7 @@ module Graphwerk
 
         before do
           expect(YAML)
-            .to receive(:load_file)
+            .to receive(:safe_load_file)
                   .with(package_todo_file)
                   .and_return(
                     '.' => {
