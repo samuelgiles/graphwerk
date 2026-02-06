@@ -1,0 +1,13 @@
+---
+".":
+  "::Order":
+    violations:
+    - dependency
+    files:
+    - components/admin/interfaces/gateway.rb
+"components/shipping":
+  "::ShippingLabel":
+    violations:
+    - privacy
+    files:
+    - components/admin/views/label.rb

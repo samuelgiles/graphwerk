@@ -15,7 +15,7 @@ module Graphwerk
     def load
       return [] if !package_todo_file.exist?
 
-      (YAML.load_file(package_todo_file) || {}).keys
+      (YAML.safe_load_file(package_todo_file) || {}).keys
     end
 
     private
