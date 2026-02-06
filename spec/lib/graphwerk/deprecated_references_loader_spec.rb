@@ -53,6 +53,15 @@ module Graphwerk
 
         it { is_expected.to contain_exactly('.') }
       end
+
+    end
+
+    describe '#load with a real YAML fixture file' do
+      let(:root_path) { Pathname.new(File.expand_path('../../support/fixtures', __dir__)) }
+
+      it 'parses the file with safe_load_file and returns the keys' do
+        expect(service.load).to contain_exactly('.', 'components/shipping')
+      end
     end
   end
 end
