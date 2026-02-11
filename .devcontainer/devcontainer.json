@@ -1,7 +1,0 @@
-{
-  "name": "Graphwerk",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
-  "postCreateCommand": "bundle install"
-}
