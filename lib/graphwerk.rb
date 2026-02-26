@@ -14,7 +14,7 @@ require 'graphwerk/builders/graph'
 require 'graphwerk/railtie' if defined?(Rails)
 
 module Graphwerk
-  #: (untyped) -> untyped
+  #: (**untyped) -> untyped
   def self.for_application(**args)
     Graphwerk::Builders::Graph.new(
       Packwerk::PackageSet.load_all_from('.')
