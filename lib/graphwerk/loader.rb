@@ -3,16 +3,14 @@
 
 module Graphwerk
   class Loader
-    extend T::Sig
-
-    sig { params(package: Packwerk::Package, root_path: Pathname, filename: String).void }
+    #: (Packwerk::Package package, Pathname root_path, String filename) -> void
     def initialize(package, root_path, filename)
       @package = package
       @root_path = root_path
       @filename = filename
     end
 
-    sig { returns(T::Array[String]) }
+    #: -> Array[String]
     def load
       return [] if !file.exist?
 
@@ -21,9 +19,9 @@ module Graphwerk
 
     private
 
-    sig { returns(Pathname) }
+    #: -> Pathname
     def file
-      @file = T.let(@file, T.nilable(Pathname))
+      @file = @file #: Pathname?
       @file ||= @root_path.join(@package.name, @filename)
     end
   end

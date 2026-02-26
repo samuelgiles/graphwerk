@@ -4,8 +4,6 @@
 module Graphwerk
   module Builders
     class Graph
-      extend T::Sig
-
       OptionsShape = T.type_alias {
         {
           layout: Graphwerk::Layout,
@@ -19,7 +17,7 @@ module Graphwerk
         }
       }
 
-      DEFAULT_OPTIONS = T.let({
+      DEFAULT_OPTIONS = {
         layout: Graphwerk::Layout::Dot,
         deprecated_references_color: 'red',
         package_todo_color: 'red',
@@ -45,18 +43,18 @@ module Graphwerk
         edge: {
           len: '0.4'
         }
-      }, OptionsShape)
+      } #: OptionsShape
 
-      sig { params(package_set: Packwerk::PackageSet, options: T::Hash[Symbol, Object], root_path: Pathname).void }
+      #: (Packwerk::PackageSet package_set, ?options: Hash[Symbol, Object], ?root_path: Pathname) -> void
       def initialize(package_set, options: {}, root_path: Pathname.new(Dir.pwd))
         @package_set = package_set
-        @options = T.let(DEFAULT_OPTIONS.deep_merge(options), OptionsShape)
+        @options = DEFAULT_OPTIONS.deep_merge(options) #: OptionsShape
         @root_path = root_path
-        @graph = T.let(build_empty_graph, GraphViz)
-        @nodes = T.let(build_empty_nodes, T::Hash[String, GraphViz::Node])
+        @graph = build_empty_graph #: GraphViz
+        @nodes = build_empty_nodes #: Hash[String, GraphViz::Node]
       end
 
-      sig { returns(GraphViz) }
+      #: -> GraphViz
       def build
         setup_graph
         add_packages_to_graph
@@ -66,12 +64,12 @@ module Graphwerk
 
       private
 
-      sig { returns(GraphViz) }
+      #: -> GraphViz
       def build_empty_graph
         GraphViz.new(:strict, type: :digraph, use: @options[:layout].serialize)
       end
 
-      sig { returns(T::Hash[String, GraphViz::Node]) }
+      #: -> Hash[String, GraphViz::Node]
       def build_empty_nodes
         {
           application: @graph.add_nodes(
@@ -81,7 +79,7 @@ module Graphwerk
         }
       end
 
-      sig { void }
+      #: -> void
       def setup_graph
         @graph = build_empty_graph
         @nodes = build_empty_nodes
@@ -90,7 +88,7 @@ module Graphwerk
         @options[:edge].each_pair { |k,v| @graph.edge[k] =v }
       end
 
-      sig { void }
+      #: -> void
       def add_package_dependencies_to_graph
         packages.each do |package|
           draw_dependencies(package)
@@ -101,14 +99,14 @@ module Graphwerk
         end
       end
 
-      sig { void }
+      #: -> void
       def add_packages_to_graph
         packages.each do |package|
           @nodes[package.name] = @graph.add_nodes(package.name, color: package.color)
         end
       end
 
-      sig { params(package: Presenters::Package).void }
+      #: (Presenters::Package package) -> void
       def draw_dependencies(package)
         package.dependencies.each do |dependency|
           unless @nodes[dependency]
@@ -118,7 +116,7 @@ module Graphwerk
         end
       end
 
-      sig { params(package: Presenters::Package).void }
+      #: (Presenters::Package package) -> void
       def draw_deprecated_references(package)
         package.deprecated_references.each do |reference|
           next unless @nodes[reference]
@@ -131,7 +129,7 @@ module Graphwerk
         end
       end
 
-      sig { params(package: Presenters::Package).void }
+      #: (Presenters::Package package) -> void
       def draw_package_todos(package)
         package.package_todos.each do |todo|
           next unless @nodes[todo]
@@ -144,9 +142,9 @@ module Graphwerk
         end
       end
 
-      sig { returns(T::Array[Presenters::Package]) }
+      #: -> Array[Presenters::Package]
       def packages
-        @packages = T.let(@packages, T.nilable(T::Array[Presenters::Package]))
+        @packages = @packages #: Array[Presenters::Package]?
         @packages ||= @package_set.map { |package| Presenters::Package.new(package, @root_path) }
       end
     end

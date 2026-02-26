@@ -3,3 +3,5 @@
 
 --ignore
 vendor
+
+--enable-experimental-rbs-comments

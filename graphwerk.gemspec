@@ -33,5 +33,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'sorbet'
   spec.add_development_dependency 'rspec-sorbet'
+  spec.add_development_dependency 'spoom'
   spec.add_development_dependency 'tapioca', '>= 0.17'
 end
