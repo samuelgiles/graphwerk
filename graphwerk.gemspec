@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['samuel.giles@bellroy.com']
 
   spec.summary       = "Visualise dependencies between your application and it's Packwerk packages using Graphviz."
-  spec.homepage      = 'https://github.com/tricycle/graphwerk'
+  spec.homepage      = 'https://github.com/samuelgiles/graphwerk'
   spec.license       = 'MIT'
 
   # Specify which files should be added to the gem when it is released.
