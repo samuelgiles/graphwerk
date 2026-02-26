@@ -18,6 +18,9 @@ jobs:
           ruby-version: '3.3'
           bundler-cache: true
 
+      - name: Run RuboCop
+        run: bundle exec rubocop
+
       - name: Run Sorbet type checking
         run: bundle exec srb tc
 

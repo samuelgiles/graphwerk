@@ -4,7 +4,7 @@
 module Graphwerk
   module Builders
     class Graph
-      OptionsShape = T.type_alias {
+      OptionsShape = T.type_alias do
         {
           layout: Graphwerk::Layout,
           deprecated_references_color: String,
@@ -15,7 +15,7 @@ module Graphwerk
           node: T::Hash[Symbol, Object],
           edge: T::Hash[Symbol, Object]
         }
-      }
+      end
 
       DEFAULT_OPTIONS = {
         layout: Graphwerk::Layout::Dot,
@@ -43,7 +43,7 @@ module Graphwerk
         edge: {
           len: '0.4'
         }
-      } #: OptionsShape
+      }.freeze #: OptionsShape
 
       #: (Packwerk::PackageSet package_set, ?options: Hash[Symbol, Object], ?root_path: Pathname) -> void
       def initialize(package_set, options: {}, root_path: Pathname.new(Dir.pwd))
@@ -83,9 +83,9 @@ module Graphwerk
       def setup_graph
         @graph = build_empty_graph
         @nodes = build_empty_nodes
-        @options[:graph].each_pair { |k,v| @graph.graph[k] =v }
-        @options[:node].each_pair { |k,v| @graph.node[k] =v }
-        @options[:edge].each_pair { |k,v| @graph.edge[k] =v }
+        @options[:graph].each_pair { |k, v| @graph.graph[k] = v }
+        @options[:node].each_pair { |k, v| @graph.node[k] = v }
+        @options[:edge].each_pair { |k, v| @graph.edge[k] = v }
       end
 
       #: -> void
@@ -109,9 +109,7 @@ module Graphwerk
       #: (Presenters::Package package) -> void
       def draw_dependencies(package)
         package.dependencies.each do |dependency|
-          unless @nodes[dependency]
-            abort "Unable to add edge `#{package.name}`->`#{dependency}`"
-          end
+          abort "Unable to add edge `#{package.name}`->`#{dependency}`" unless @nodes[dependency]
           @graph.add_edges(@nodes[package.name], @nodes[dependency], color: package.color)
         end
       end

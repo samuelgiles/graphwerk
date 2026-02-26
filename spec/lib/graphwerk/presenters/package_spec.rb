@@ -41,7 +41,7 @@ module Graphwerk
       describe '#dependencies' do
         subject { presenter.dependencies }
 
-        it { is_expected.to eq ['security', 'orders'] }
+        it { is_expected.to eq %w[security orders] }
       end
 
       describe '#deprecated_references' do

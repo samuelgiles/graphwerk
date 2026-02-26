@@ -44,9 +44,9 @@ module Graphwerk
               .with(file)
               .and_return(
                 '.' => {
-                  "::Order" => {
-                    "violations" => ["dependency"],
-                    "files" => ["components/admin/interfaces/gateway.rb"]
+                  '::Order' => {
+                    'violations' => ['dependency'],
+                    'files' => ['components/admin/interfaces/gateway.rb']
                   }
                 }
               )

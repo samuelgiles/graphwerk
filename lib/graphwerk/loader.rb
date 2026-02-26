@@ -12,7 +12,7 @@ module Graphwerk
 
     #: -> Array[String]
     def load
-      return [] if !file.exist?
+      return [] unless file.exist?
 
       (YAML.safe_load_file(file) || {}).keys
     end
