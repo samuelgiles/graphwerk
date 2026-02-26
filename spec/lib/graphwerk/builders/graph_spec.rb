@@ -128,6 +128,42 @@ module Graphwerk
           end
         end
 
+        context 'when a deprecated reference points to a package not in the graph' do
+          let(:deprecated_references_loader_for_images) do
+            instance_double(DeprecatedReferencesLoader, load: ['.', 'components/unknown'])
+          end
+
+          specify do
+            expect { diagram }.not_to raise_error
+          end
+
+          it 'skips the edge for the missing package' do
+            expect(diagram).not_to include('unknown')
+          end
+
+          it 'still draws edges for known packages' do
+            expect(diagram).to include('images -> Application [color = "red"]')
+          end
+        end
+
+        context 'when a package todo points to a package not in the graph' do
+          let(:package_todo_loader_for_frontend) do
+            instance_double(PackageTodoLoader, load: ['components/storage_providers/s3', 'components/nonexistent'])
+          end
+
+          specify do
+            expect { diagram }.not_to raise_error
+          end
+
+          it 'skips the edge for the missing package' do
+            expect(diagram).not_to include('nonexistent')
+          end
+
+          it 'still draws edges for known packages' do
+            expect(diagram).to include('frontend -> "storage_providers/s3" [color = "red"]')
+          end
+        end
+
         context 'when hiding todos' do
           let(:builder) { described_class.new(package_set, options: { hide_todo: true }) }
 
