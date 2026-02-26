@@ -50,23 +50,22 @@ module Graphwerk
         subject(:diagram) { builder.build.to_s }
 
         let(:deprecated_references_loader_for_images) do
-          instance_double(DeprecatedReferencesLoader, load: ['.'])
+          instance_double(Loader, load: ['.'])
         end
 
         let(:package_todo_loader_for_frontend) do
-          instance_double(PackageTodoLoader, load: ['components/storage_providers/s3'])
+          instance_double(Loader, load: ['components/storage_providers/s3'])
         end
 
         before do
-          allow(DeprecatedReferencesLoader).to receive(:new).and_call_original
-          allow(DeprecatedReferencesLoader)
+          allow(Loader).to receive(:new).and_call_original
+          allow(Loader)
             .to receive(:new)
-            .with(images_package, an_instance_of(Pathname))
+            .with(images_package, an_instance_of(Pathname), 'deprecated_references.yml')
             .and_return(deprecated_references_loader_for_images)
-          allow(PackageTodoLoader).to receive(:new).and_call_original
-          allow(PackageTodoLoader)
+          allow(Loader)
             .to receive(:new)
-            .with(frontend_package, an_instance_of(Pathname))
+            .with(frontend_package, an_instance_of(Pathname), 'package_todo.yml')
             .and_return(package_todo_loader_for_frontend)
         end
 
@@ -130,7 +129,7 @@ module Graphwerk
 
         context 'when a deprecated reference points to a package not in the graph' do
           let(:deprecated_references_loader_for_images) do
-            instance_double(DeprecatedReferencesLoader, load: ['.', 'components/unknown'])
+            instance_double(Loader, load: ['.', 'components/unknown'])
           end
 
           specify do
@@ -148,7 +147,7 @@ module Graphwerk
 
         context 'when a package todo points to a package not in the graph' do
           let(:package_todo_loader_for_frontend) do
-            instance_double(PackageTodoLoader, load: ['components/storage_providers/s3', 'components/nonexistent'])
+            instance_double(Loader, load: ['components/storage_providers/s3', 'components/nonexistent'])
           end
 
           specify do
