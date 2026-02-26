@@ -1,0 +1,50 @@
+plugins:
+  - rubocop-sorbet
+
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - 'bin/**/*'
+    - 'vendor/**/*'
+    - 'sorbet/**/*'
+
+Layout/LeadingCommentSpace:
+  AllowRBSInlineAnnotation: true
+
+# The `@x = @x #: Type` pattern is used for RBS type annotations on instance
+# variables. RuboCop sees this as self-assignment but it's required by Sorbet.
+Lint/SelfAssignment:
+  Enabled: false
+
+Sorbet/EnforceSignatures:
+  Enabled: true
+  Style: rbs
+
+Sorbet/FalseSigil:
+  Exclude:
+    - 'lib/graphwerk/railtie.rb'
+
+Gemspec/DevelopmentDependencies:
+  Enabled: false
+
+Gemspec/RequiredRubyVersion:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 20
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - '*.gemspec'
+
+Metrics/ClassLength:
+  Max: 120
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'spec/**/*'

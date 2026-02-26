@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
@@ -31,7 +33,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'rake', '>= 12.3.3'
   spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'sorbet'
   spec.add_development_dependency 'rspec-sorbet'
+  spec.add_development_dependency 'rubocop'
+  spec.add_development_dependency 'rubocop-sorbet'
+  spec.add_development_dependency 'sorbet'
+  spec.add_development_dependency 'spoom'
   spec.add_development_dependency 'tapioca', '>= 0.17'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end
