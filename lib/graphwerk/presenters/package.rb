@@ -24,14 +24,14 @@ module Graphwerk
 
       sig { returns(T::Array[String]) }
       def deprecated_references
-        DeprecatedReferencesLoader.new(@package, @root_path).load.map do |reference|
+        Loader.new(@package, @root_path, 'deprecated_references.yml').load.map do |reference|
           Name.new(reference).node_name
         end
       end
 
       sig { returns(T::Array[String]) }
       def package_todos
-        PackageTodoLoader.new(@package, @root_path).load.map do |todo|
+        Loader.new(@package, @root_path, 'package_todo.yml').load.map do |todo|
           Name.new(todo).node_name
         end
       end

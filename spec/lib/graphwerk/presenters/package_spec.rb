@@ -47,14 +47,14 @@ module Graphwerk
       describe '#deprecated_references' do
         subject { presenter.deprecated_references }
 
-        let(:deprecated_references_loader) { instance_double(DeprecatedReferencesLoader) }
+        let(:loader) { instance_double(Loader) }
 
         before do
-          expect(DeprecatedReferencesLoader)
+          expect(Loader)
             .to receive(:new)
-            .with(package, root_path)
-            .and_return(deprecated_references_loader)
-          expect(deprecated_references_loader).to receive(:load).and_return(['.'])
+            .with(package, root_path, 'deprecated_references.yml')
+            .and_return(loader)
+          expect(loader).to receive(:load).and_return(['.'])
         end
 
         it { is_expected.to contain_exactly('Application') }
@@ -63,14 +63,14 @@ module Graphwerk
       describe '#package_todos' do
         subject { presenter.package_todos }
 
-        let(:package_todo_loader) { instance_double(PackageTodoLoader) }
+        let(:loader) { instance_double(Loader) }
 
         before do
-          expect(PackageTodoLoader)
+          expect(Loader)
             .to receive(:new)
-                  .with(package, root_path)
-                  .and_return(package_todo_loader)
-          expect(package_todo_loader).to receive(:load).and_return(['.'])
+            .with(package, root_path, 'package_todo.yml')
+            .and_return(loader)
+          expect(loader).to receive(:load).and_return(['.'])
         end
 
         it { is_expected.to contain_exactly('Application') }
