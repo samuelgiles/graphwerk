@@ -48,7 +48,7 @@ module Graphwerk
       }, OptionsShape)
 
       sig { params(package_set: Packwerk::PackageSet, options: T::Hash[Symbol, Object], root_path: Pathname).void }
-      def initialize(package_set, options: {}, root_path: Pathname.new(ENV['PWD']))
+      def initialize(package_set, options: {}, root_path: Pathname.new(Dir.pwd))
         @package_set = package_set
         @options = T.let(DEFAULT_OPTIONS.deep_merge(options), OptionsShape)
         @root_path = root_path
