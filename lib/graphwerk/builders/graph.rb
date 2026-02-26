@@ -121,6 +121,8 @@ module Graphwerk
       sig { params(package: Presenters::Package).void }
       def draw_deprecated_references(package)
         package.deprecated_references.each do |reference|
+          next unless @nodes[reference]
+
           @graph.add_edges(
             @nodes[package.name],
             @nodes[reference],
@@ -132,6 +134,8 @@ module Graphwerk
       sig { params(package: Presenters::Package).void }
       def draw_package_todos(package)
         package.package_todos.each do |todo|
+          next unless @nodes[todo]
+
           @graph.add_edges(
             @nodes[package.name],
             @nodes[todo],
